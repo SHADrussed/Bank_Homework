@@ -1,12 +1,15 @@
-def filter_by_state(list_of_kwargs: list[dict[str, object]], state: str = "EXECUTED") -> list:
-    """Сортирует список по статусу"""
-    new_list_kwargs: list = []
+from typing import List, Dict, Any  # Импортируем List и Dict для аннотаций
+
+
+def filter_by_state(list_of_kwargs: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
+    """Фильтрует список по статусу."""
+    new_list_kwargs: List[Dict[str, Any]] = []
     for i in list_of_kwargs:
         if i["state"] == state:
             new_list_kwargs.append(i)
     return new_list_kwargs
 
 
-def sort_by_date(operations: list, reverse: bool = True) -> list:
+def sort_by_date(operations: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
     """Сортирует список словарей по дате."""
     return sorted(operations, key=lambda x: x["date"], reverse=reverse)
