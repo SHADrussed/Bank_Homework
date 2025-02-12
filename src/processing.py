@@ -1,8 +1,10 @@
 from typing import List, Dict, Any  # Импортируем List и Dict для аннотаций
 
 
-def filter_by_state(list_of_kwargs: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
+def filter_by_state(list_of_kwargs: List[Dict[str, Any]], state: str = "EXECUTED") -> list[dict[str, Any]]:
     """Фильтрует список по статусу."""
+    if not list_of_kwargs:
+        return []
     new_list_kwargs: List[Dict[str, Any]] = []
     for i in list_of_kwargs:
         if i.get("state") == state:

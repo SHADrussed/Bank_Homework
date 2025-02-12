@@ -3,72 +3,70 @@ import pytest
 from src.processing import filter_by_state
 
 
-@pytest.mark.parametrize('user_data, state, expected', [
-    # Фильтрация по умолчанию (EXECUTED)
-    (
-        [
-            {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-            {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'},
-            {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
-            {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}
-        ],
-        "EXECUTED",
-        [
-            {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-            {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}
-        ]
-    ),
-    # Фильтрация по состоянию CANCELED
-    (
-        [
-            {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-            {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'},
-            {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
-            {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}
-        ],
-        "CANCELED",
-        [
-            {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
-            {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}
-        ]
-    ),
-    # Пустой список на входе
-    (
-        [],
-        "EXECUTED",
-        []
-    ),
-    # Нет элементов с указанным состоянием
-    (
-        [
-            {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-            {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}
-        ],
-        "CANCELED",
-        []
-    ),
-    # Отсутствие ключа 'state' в некоторых элементах
-    (
-        [
-            {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'},
-            {'id': 939719570, 'date': '2018-06-30T02:08:58.425572'},  # Нет ключа 'state'
-            {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'}
-        ],
-        "EXECUTED",
-        [
-            {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}
-        ]
-    ),
-    # Все элементы без ключа 'state'
-    (
-        [
-            {'id': 41428829, 'date': '2019-07-03T18:35:29.512364'},
-            {'id': 939719570, 'date': '2018-06-30T02:08:58.425572'}
-        ],
-        "EXECUTED",
-        []
-    ),
-])
+@pytest.mark.parametrize(
+    "user_data, state, expected",
+    [
+        # 1. Стандартные статусы с наличием элементов
+        (
+            [
+                {"id": 1, "state": "EXECUTED"},
+                {"id": 2, "state": "CANCELED"},
+                {"id": 3, "state": "PENDING"}
+            ],
+            "EXECUTED",
+            [{"id": 1, "state": "EXECUTED"}]
+        ),
+        (
+            [
+                {"id": 4, "state": "EXECUTED"},
+                {"id": 5, "state": "FAILED"}
+            ],
+            "FAILED",
+            [{"id": 5, "state": "FAILED"}]
+        ),
+
+        # 2. Нестандартные статусы и типы данных
+        (
+            [
+                {"id": 6, "state": 123},
+                {"id": 7, "state": None}
+            ],
+            123,
+            [{"id": 6, "state": 123}]
+        ),
+        (
+            [
+                {"id": 8, "state": "executed"}
+            ],
+            "EXECUTED",
+            []
+        ),
+
+        # 3. Отсутствие элементов с указанным статусом
+        (
+            [
+                {"id": 9, "state": "EXECUTED"},
+                {"id": 10, "state": "CANCELED"}
+            ],
+            "PENDING",
+            []
+        ),
+
+        # 4. Элементы без ключа 'state'
+        (
+            [
+                {"id": 11},
+                {"id": 12, "state": "EXECUTED"}
+            ],
+            "EXECUTED",
+            [{"id": 12, "state": "EXECUTED"}]
+        ),
+
+        # 5. Граничные случаи
+        ([], "ANY_STATUS", []),  # Пустой список
+        (None, "EXECUTED", []),  # None вместо списка
+    ]
+)
 
 def test_filter_by_state(user_data, state, expected):
     assert filter_by_state(user_data, state) == expected
