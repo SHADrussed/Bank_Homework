@@ -8,7 +8,7 @@ def mask_account_card(new_line: str) -> str:
     first_element = card_elements[0]
     if first_element == "Счет":
         return f"{first_element} {get_mask_account(card_account_number)}"
-    return " ".join({*card_elements[0:-1], get_mask_card_number(card_account_number)})
+    return " ".join([*card_elements[0:-1], get_mask_card_number(card_account_number)])
 
 
 def get_date(user_date_and_time: str) -> str:
