@@ -15,5 +15,16 @@ def get_mask_card_number(card_number: int) -> str:
 
 def get_mask_account(card_number: int) -> str:
     """Функция маскировки номера банковского счета"""
-    refactored_card_number: str = str(card_number)
-    return "**" + refactored_card_number[-4:]
+    refactored_card_number = str(card_number)
+    length = len(refactored_card_number)
+
+    if length == 0:
+        return ''
+    elif length > 4:
+        return "**" + refactored_card_number[-4:]
+    else:
+        if length == 1:
+            return '*'
+        visible_length = length - 2
+        visible_digits = refactored_card_number[-visible_length:] if visible_length > 0 else ''
+        return "**" + visible_digits
