@@ -9,6 +9,7 @@ from src.masks import get_mask_account
     (1234, '**34'),                  # Номер счета из 4 цифр
     (123, '**3'),                    # Номер счета из 3 цифр (короткий)
     (0, '*'),                        # Номер счета из 1 цифры (короткий)
+    (None, '')
 ])
 
 def test_get_mask_account(card_number, expected):

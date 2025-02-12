@@ -39,6 +39,7 @@ from src.masks import get_mask_card_number
     (1322, "** **"),
     (12, "**"),
     (1, "*"),
+    (None, '')
 ])
 
 def test_get_mask_card_number(card_number: int, expected):
