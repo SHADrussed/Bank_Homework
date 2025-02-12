@@ -5,7 +5,7 @@ def filter_by_state(list_of_kwargs: List[Dict[str, Any]], state: str = "EXECUTED
     """Фильтрует список по статусу."""
     new_list_kwargs: List[Dict[str, Any]] = []
     for i in list_of_kwargs:
-        if i["state"] == state:
+        if i.get("state") == state:
             new_list_kwargs.append(i)
     return new_list_kwargs
 
