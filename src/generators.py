@@ -17,5 +17,7 @@ def transaction_descriptions(list_of_dict: list[dict[str, Any]], start: int = 0)
 def card_number_generator(start: int, stop: int) -> list[str] | None:
     if start is None or stop is None:
         return None
-    list_of_numbers = list(map(lambda x: " ".join([x[:4], x[4:8], x[8:12], x[12:]]), [str(i).zfill(16) for i in range(start, stop+1)]))
+    list_of_numbers = list(
+        map(lambda x: " ".join([x[:4], x[4:8], x[8:12], x[12:]]), [str(i).zfill(16) for i in range(start, stop + 1)])
+    )
     return list_of_numbers

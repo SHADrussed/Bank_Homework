@@ -1,3 +1,4 @@
+from src.decorators import log
 from src.processing import filter_by_state, sort_by_date
 from src.widget import get_data, mask_account_card
 
@@ -35,3 +36,11 @@ print(
         ]
     )
 )
+
+
+@log(filename="mylog.txt")
+def my_function(x, y):
+    return x + y
+
+
+my_function(1, 45)
