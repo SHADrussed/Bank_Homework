@@ -1,10 +1,24 @@
 from functools import wraps
+from typing import Callable, Optional, Any, TypeVar
+
+# Define a type variable for the return type of the decorated function
+F = TypeVar("F", bound=Callable[..., Any])
 
 
-def log(filename=None):
-    def decorator(func):
+def log(filename: Optional[str] = None) -> Callable[[F], F]:
+    """
+    Decorator to log function calls and their results or errors.
+
+    Args:
+        filename (Optional[str]): The name of the file to log to. If None, logs to stdout.
+
+    Returns:
+        Callable[[F], F]: The decorated function.
+    """
+
+    def decorator(func: F) -> F:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             message = f"{func.__name__}"
             try:
                 result = func(*args, **kwargs)
@@ -19,6 +33,6 @@ def log(filename=None):
                     file.write(message + "\n")
             return result
 
-        return wrapper
+        return wrapper  # type: ignore
 
     return decorator
