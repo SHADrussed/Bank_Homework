@@ -4,7 +4,7 @@ from unittest.mock import patch
 from src.external_api import get_amount_of_transaction
 
 
-@patch("requests.request")
+@patch("requests.get")
 def test_get_amount_of_transaction_normal(mock_get: Any) -> None:
     mock_get.return_value.json.return_value = {
         "success": True,
@@ -43,3 +43,16 @@ def test_get_amount_of_transaction_another() -> None:
 
     result = get_amount_of_transaction(transaction)
     assert result is None
+
+
+@patch("requests.get")
+def test_get_amount_of_transaction_rub(mock_get: Any) -> None:
+    transaction = {
+        "id": 441945886,
+        "state": "EXECUTED",
+        "date": "2019-08-26T10:50:58.294041",
+        "operationAmount": {"amount": "1000.00", "currency": {"name": "RUB", "code": "RUB"}},
+    }
+
+    result = get_amount_of_transaction(transaction)
+    assert result == 1000.00

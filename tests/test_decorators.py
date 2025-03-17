@@ -27,8 +27,8 @@ def test_log_ok(capsys: pytest.CaptureFixture[str], my_function: Callable[[Any, 
 @pytest.mark.parametrize(
     "x, y, expected_error",
     [
-        (1, "2", "unsupported operand type(s) for +: 'int' and 'str'"),
-        (1, None, "unsupported operand type(s) for +: 'int' and 'NoneType'"),
+        (1, "2", "Function returned None due to an error"),
+        (1, None, "Function returned None due to an error"),
     ],
 )
 def test_log_errors(
@@ -40,7 +40,7 @@ def test_log_errors(
 ) -> None:
     my_function(x, y)
     captured = capsys.readouterr()
-    assert captured.out == f"my_function error {expected_error}. Inputs: (({x}, {repr(y)}), {{}})\n"
+    assert captured.out == f"my_function error {expected_error}. Inputs: ({repr(x)}, {repr(y)}, {{}})\n"
 
 
 def test_log_file(tmpdir: Path) -> None:
@@ -56,7 +56,5 @@ def test_log_file(tmpdir: Path) -> None:
     my_function(1, None)
 
     file_content = log_file.read_text(encoding="utf-8")
-    expected_content = (
-        "my_function error unsupported operand type(s) for +: 'int' and 'NoneType'. Inputs: ((1, None), {})\n"
-    )
+    expected_content = "my_function error Function returned None due to an error. Inputs: (1, None, " "{})\n"
     assert file_content == expected_content
