@@ -1,24 +1,42 @@
 from functools import wraps
+from typing import Callable, Optional, Any, TypeVar, cast
+
+# Define a type variable for the return type of the decorated function
+F = TypeVar("F", bound=Callable[..., Any])
 
 
-def log(filename=None):
-    def decorator(func):
+def log(filename: Optional[str] = None) -> Callable[[F], F]:
+    """
+    Декоратор для логирования вызовов функций и их результатов или ошибок.
+
+    Args:
+        filename (Optional[str]): Имя файла для логирования. Если None, выводит в stdout.
+
+    Returns:
+        Callable[[F], F]: Декорированная функция.
+    """
+
+    def decorator(func: F) -> F:
         @wraps(func)
-        def wrapper(*args, **kwargs):
-            message = f"{func.__name__}"
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
                 result = func(*args, **kwargs)
-                message += " ok"
+                # Если функция вернула None, считаем это ошибкой
+                if result is None:
+                    raise TypeError("Function returned None due to an error")
+                message = f"{func.__name__} ok\n"
             except Exception as e:
-                message += f" error {e}. Inputs: {args, kwargs}"
-                result = None
+                message = f"{func.__name__} error {e}. Inputs: ({', '.join(map(repr, args))}, {kwargs})\n"
+                result = None  # Возвращаем None в случае ошибки
+
             if filename is None:
-                print(message)
+                print(message, end="")
             else:
-                with open(filename, "a") as file:
-                    file.write(message + "\n")
+                with open(filename, "a", encoding="utf-8") as file:
+                    file.write(message)
+
             return result
 
-        return wrapper
+        return cast(F, wrapper)  # Явное приведение типа
 
     return decorator
